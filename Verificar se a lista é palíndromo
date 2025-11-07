@@ -1,0 +1,89 @@
+# Classe que representa um nó da lista
+# (é tipo uma caixinha que guarda um valor e sabe quem vem antes e quem vem depois)
+class No:
+    def __init__(self, valor):
+        self.valor = valor
+        self.proximo = None  # quem vem depois
+        self.anterior = None  # quem vem antes
+
+
+# Classe principal da lista duplamente encadeada
+# (basicamente a lista que vai juntando vários nós)
+class ListaDuplamenteEncadeada:
+    def __init__(self):
+        self.primeiro = None  # começa vazia
+
+    # Adiciona um valor no final da lista
+    def inserir(self, valor):
+        novo = No(valor)  # cria um novo nó com o valor
+        if self.primeiro == None:
+            # se tiver vazia, o novo nó vira o primeiro
+            self.primeiro = novo
+        else:
+            # se já tiver coisa, vai até o final pra colocar lá
+            atual = self.primeiro
+            while atual.proximo != None:
+                atual = atual.proximo
+            atual.proximo = novo
+            novo.anterior = atual  # liga os dois
+
+    # Mostra tudo que tem na lista
+    def exibir(self):
+        if self.primeiro == None:
+            print("Lista Vazia")
+        else:
+            atual = self.primeiro
+            while atual != None:
+                # vai mostrando os valores até o final
+                print(atual.valor, end=" <-> " if atual.proximo else "")
+                atual = atual.proximo
+            print()  # só pula a linha no final
+
+    # Verifica se a lista é palíndromo
+    def palindromo(self):
+        # primeiro, vê se tem algo na lista
+        if self.primeiro == None:
+            print("Lista Vazia")
+            return False
+
+        # pega o começo e o fim da lista
+        inicio = self.primeiro
+        fim = self.primeiro
+
+        # anda até o último nó pra achar o fim
+        while fim.proximo != None:
+            fim = fim.proximo
+
+        # compara o começo com o final até se encontrarem no meio
+        while inicio != None and fim != None and inicio != fim and inicio.anterior != fim:
+            if inicio.valor != fim.valor:
+                # se tiver algum valor diferente, já era
+                print("Não é palíndromo!")
+                return False
+            # se tiver igual, anda um pra frente e outro pra trás
+            inicio = inicio.proximo
+            fim = fim.anterior
+
+        # se passou por tudo sem erro, é palíndromo!
+        print("É palíndromo!")
+        return True
+
+
+# ===== TESTE DO EXERCÍCIO =====
+print("=== TESTE 1 ===")
+lista1 = ListaDuplamenteEncadeada()
+lista1.inserir(10)
+lista1.inserir(20)
+lista1.inserir(30)
+lista1.inserir(20)
+lista1.inserir(10)
+lista1.exibir()
+lista1.palindromo()  # Deve mostrar que é palíndromo
+
+print("\n=== TESTE 2 ===")
+lista2 = ListaDuplamenteEncadeada()
+lista2.inserir(5)
+lista2.inserir(10)
+lista2.inserir(15)
+lista2.exibir()
+lista2.palindromo()  # Deve mostrar que NÃO é
