@@ -1,0 +1,79 @@
+# Classe que representa cada nó da lista
+# (cada nó é tipo uma caixinha que guarda o valor e sabe quem vem antes e quem vem depois)
+class No:
+    def __init__(self, valor):
+        self.valor = valor
+        self.proximo = None  # aponta pro próximo nó
+        self.anterior = None  # aponta pro nó anterior
+
+
+# Classe que representa a lista duplamente encadeada
+# (aqui é onde a mágica acontece, juntando todos os nós)
+class ListaDuplamenteEncadeada:
+    def __init__(self):
+        self.primeiro = None  # começa vazia
+
+    # Adiciona um novo valor no final da lista
+    def inserir(self, valor):
+        novo = No(valor)  # cria um novo nó
+        if self.primeiro == None:
+            # se a lista tiver vazia, esse nó vira o primeiro
+            self.primeiro = novo
+        else:
+            # se já tiver coisa, vai até o final e coloca o novo lá
+            atual = self.primeiro
+            while atual.proximo != None:
+                atual = atual.proximo
+            atual.proximo = novo
+            novo.anterior = atual  # liga os dois nós
+
+    # Mostra tudo que tem na lista
+    def exibir(self):
+        if self.primeiro == None:
+            print("Lista Vazia")
+        else:
+            atual = self.primeiro
+            while atual != None:
+                # vai mostrando os valores com setinhas no meio
+                print(atual.valor, end=" <-> " if atual.proximo else "")
+                atual = atual.proximo
+            print()  # quebra de linha no final
+
+    # Junta (concatena) outra lista no final da atual
+    def concatenar(self, outra_lista):
+        # se a primeira lista tiver vazia, a segunda vira a principal
+        if self.primeiro == None:
+            self.primeiro = outra_lista.primeiro
+            return
+
+        # se a segunda estiver vazia, não tem o que juntar
+        if outra_lista.primeiro == None:
+            return
+
+        # vai até o último nó da primeira lista
+        atual = self.primeiro
+        while atual.proximo != None:
+            atual = atual.proximo
+
+        # conecta o fim da primeira lista no começo da segunda
+        atual.proximo = outra_lista.primeiro
+        outra_lista.primeiro.anterior = atual
+
+
+# ===== TESTE DO EXERCÍCIO =====
+print("=== LISTA 1 ===")
+lista1 = ListaDuplamenteEncadeada()
+lista1.inserir(1)
+lista1.inserir(2)
+lista1.inserir(3)
+lista1.exibir()
+
+print("\n=== LISTA 2 ===")
+lista2 = ListaDuplamenteEncadeada()
+lista2.inserir(4)
+lista2.inserir(5)
+lista2.exibir()
+
+print("\n=== LISTA CONCATENADA ===")
+lista1.concatenar(lista2)
+lista1.exibir()
