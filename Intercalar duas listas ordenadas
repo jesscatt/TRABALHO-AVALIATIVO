@@ -1,0 +1,115 @@
+# Classe que representa cada nó da lista
+# (pensa num "bloco" que guarda um valor e aponta pro da frente e pro de trás)
+class No:
+    def __init__(self, valor):
+        self.valor = valor
+        self.proximo = None  # aponta pro próximo nó
+        self.anterior = None  # aponta pro nó anterior
+
+
+# Classe que representa a lista duplamente encadeada
+# (tipo uma corrente: cada elo sabe quem vem antes e quem vem depois)
+class ListaDuplamenteEncadeada:
+    def __init__(self):
+        self.primeiro = None  # começo da lista, inicialmente vazia
+
+    # Função pra inserir valor no final da lista
+    def inserir(self, valor):
+        novo = No(valor)  # cria um novo nó
+        if self.primeiro == None:
+            # se a lista tiver vazia, esse nó vira o primeiro
+            self.primeiro = novo
+        else:
+            # senão, anda até o final e coloca o novo lá
+            atual = self.primeiro
+            while atual.proximo != None:
+                atual = atual.proximo
+            atual.proximo = novo
+            novo.anterior = atual
+
+    # Função pra mostrar toda a lista
+    def exibir(self):
+        if self.primeiro == None:
+            print("Lista Vazia")
+        else:
+            # começa do primeiro e vai imprimindo até o final
+            atual = self.primeiro
+            while atual != None:
+                print(atual.valor, end=" <-> " if atual.proximo else "")
+                atual = atual.proximo
+            print()  # só pra quebrar linha no final
+
+    # Função pra intercalar duas listas ordenadas (misturar mantendo a ordem)
+    def intercalar(self, outra_lista):
+        # pega o primeiro nó das duas listas
+        atual1 = self.primeiro
+        atual2 = outra_lista.primeiro
+
+        # se uma das listas estiver vazia, retorna a outra direto
+        if atual1 == None:
+            return outra_lista
+        if atual2 == None:
+            return self
+
+        # decide quem vai ser o primeiro nó da lista final
+        if atual1.valor <= atual2.valor:
+            inicio = atual1
+            atual1 = atual1.proximo
+        else:
+            inicio = atual2
+            atual2 = atual2.proximo
+
+        # variável pra ajudar a montar o resultado
+        atual_resultado = inicio
+
+        # vai comparando os valores das duas listas e intercalando
+        while atual1 != None and atual2 != None:
+            if atual1.valor <= atual2.valor:
+                atual_resultado.proximo = atual1
+                atual1.anterior = atual_resultado
+                atual1 = atual1.proximo
+            else:
+                atual_resultado.proximo = atual2
+                atual2.anterior = atual_resultado
+                atual2 = atual2.proximo
+            atual_resultado = atual_resultado.proximo
+
+        # se sobrar alguma parte de uma lista, liga ela no final
+        if atual1 != None:
+            atual_resultado.proximo = atual1
+            atual1.anterior = atual_resultado
+        elif atual2 != None:
+            atual_resultado.proximo = atual2
+            atual2.anterior = atual_resultado
+
+        # cria uma nova lista só pra guardar o resultado final
+        nova_lista = ListaDuplamenteEncadeada()
+        nova_lista.primeiro = inicio
+
+        return nova_lista
+
+
+# ===== TESTE DO EXERCÍCIO =====
+# criando duas listas ordenadas pra testar
+lista1 = ListaDuplamenteEncadeada()
+lista2 = ListaDuplamenteEncadeada()
+
+# jogando uns valores nelas
+lista1.inserir(1)
+lista1.inserir(3)
+lista1.inserir(5)
+
+lista2.inserir(2)
+lista2.inserir(4)
+lista2.inserir(6)
+
+# mostrando as duas listas antes de intercalar
+print("Lista 1:")
+lista1.exibir()
+print("Lista 2:")
+lista2.exibir()
+
+# agora faz a mistura das duas (intercalação)
+print("\nLista Intercalada:")
+lista_resultado = lista1.intercalar(lista2)
+lista_resultado.exibir()
